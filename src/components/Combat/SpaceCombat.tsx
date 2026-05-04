@@ -9,12 +9,27 @@ export function SpaceCombat() {
   const endSpaceTurn = useGameStore(s => s.endSpaceTurn);
   const setScreen = useGameStore(s => s.setScreen);
   const logRef = useRef<HTMLDivElement>(null);
+  const cheatBuf = useRef('');
 
   useEffect(() => {
     if (logRef.current) {
       logRef.current.scrollTop = logRef.current.scrollHeight;
     }
   }, [sc?.log]);
+
+  useEffect(() => {
+    function onKey(e: KeyboardEvent) {
+      cheatBuf.current = (cheatBuf.current + e.key.toUpperCase()).slice(-3);
+      if (cheatBuf.current === 'MJR') {
+        const cur = useGameStore.getState().spaceCombat;
+        if (cur && cur.phase !== 'victory' && cur.phase !== 'defeat') {
+          useGameStore.setState({ spaceCombat: { ...cur, phase: 'victory', enemies: [] } });
+        }
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   if (!sc) return null;
 

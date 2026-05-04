@@ -3,6 +3,32 @@ import { useGameStore } from '../../store/gameStore';
 import type { Combatant } from '../../types/game';
 import { rarityColor, generateLoot } from '../../utils/loot';
 
+function useCheatWin() {
+  useEffect(() => {
+    const buf = { value: '' };
+    function onKey(e: KeyboardEvent) {
+      buf.value = (buf.value + e.key.toUpperCase()).slice(-3);
+      if (buf.value === 'MJR') {
+        const sc = useGameStore.getState().surfaceCombat;
+        if (!sc || sc.phase === 'victory' || sc.phase === 'defeat') return;
+        const loot = generateLoot(sc.mission.lootDrops);
+        useGameStore.setState({
+          missionResult: {
+            success: true,
+            xpGained: sc.mission.xpReward,
+            creditsGained: sc.mission.creditReward,
+            loot,
+            missionName: sc.mission.name,
+          },
+          screen: 'missionResult',
+        });
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+}
+
 function EnemyFigure({ enemy, isTarget, onClick }: { enemy: Combatant; isTarget: boolean; onClick: () => void }) {
   const hpPct = (enemy.hp / enemy.maxHp) * 100;
   const shapes: Record<string, React.ReactNode> = {
@@ -142,6 +168,7 @@ export function SurfaceCombat() {
   const selectSurfaceTarget = useGameStore(s => s.selectSurfaceTarget);
   const executePlayerTurn = useGameStore(s => s.executePlayerTurn);
   const logRef = useRef<HTMLDivElement>(null);
+  useCheatWin();
 
   useEffect(() => {
     if (logRef.current) {
