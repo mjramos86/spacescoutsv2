@@ -8,7 +8,7 @@ export default defineConfig({
     outDir: 'docs',
     emptyOutDir: true,
     rollupOptions: {
-      input: '_dev.html',
+      input: 'app.html',
     },
   },
 })
