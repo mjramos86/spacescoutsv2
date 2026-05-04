@@ -22,79 +22,82 @@ type HubArea =
   | 'wormholeTerminal'
   | null;
 
-interface AreaConfig {
+interface Hotspot {
   id: Exclude<HubArea, null>;
   label: string;
   icon: string;
   description: string;
   color: string;
-  accentColor: string;
+  // % from left, % from top of the image container
+  x: number;
+  y: number;
 }
 
-const AREAS: AreaConfig[] = [
+// Each hotspot is pinned to a distinct architectural feature on the station image
+const HOTSPOTS: Hotspot[] = [
   {
     id: 'commandBridge',
     label: 'Command Bridge',
     icon: '👨‍✈️',
-    description: 'Captain stats, equipment, skills and talent tree',
-    color: '#ef444422',
-    accentColor: '#ef4444',
-  },
-  {
-    id: 'hangarBay',
-    label: 'Hangar Bay',
-    icon: '🛸',
-    description: 'Ship stats and equipment management',
-    color: '#60a5fa22',
-    accentColor: '#60a5fa',
-  },
-  {
-    id: 'robotWorkshop',
-    label: 'Robot Workshop',
-    icon: '🤖',
-    description: 'Manage robot roster, deploy crew for missions',
-    color: '#a855f722',
-    accentColor: '#a855f7',
-  },
-  {
-    id: 'missionControl',
-    label: 'Mission Control',
-    icon: '🎯',
-    description: 'Launch missions, select difficulty',
-    color: '#10b98122',
-    accentColor: '#10b981',
-  },
-  {
-    id: 'galacticMarket',
-    label: 'Galactic Market',
-    icon: '🏪',
-    description: 'Buy, sell and salvage equipment',
-    color: '#f59e0b22',
-    accentColor: '#f59e0b',
-  },
-  {
-    id: 'workshop',
-    label: 'Workshop',
-    icon: '🔧',
-    description: 'Upgrade equipment rarity using credits',
-    color: '#94a3b822',
-    accentColor: '#94a3b8',
-  },
-  {
-    id: 'officersLounge',
-    label: "Officer's Lounge",
-    icon: '🏆',
-    description: 'Achievements, statistics and codex',
-    color: '#f9731622',
-    accentColor: '#f97316',
+    description: 'Captain stats, equipment & talents',
+    color: '#ef4444',
+    x: 47, y: 13,   // top dome / command tower
   },
   {
     id: 'wormholeTerminal',
     label: 'Wormhole Terminal',
     icon: '🌀',
-    description: 'Quick launch missions and daily contracts',
-    color: '#7c3aed22',
-    accentColor: '#7c3aed',
+    description: 'Quick-launch & daily contracts',
+    color: '#7c3aed',
+    x: 65, y: 20,   // upper-right comm antenna
+  },
+  {
+    id: 'hangarBay',
+    label: 'Hangar Bay',
+    icon: '🛸',
+    description: 'Ship stats & equipment',
+    color: '#60a5fa',
+    x: 14, y: 46,   // left docking modules
+  },
+  {
+    id: 'robotWorkshop',
+    label: 'Robot Workshop',
+    icon: '🤖',
+    description: 'Roster management & crew selection',
+    color: '#a855f7',
+    x: 77, y: 35,   // right ring arm
+  },
+  {
+    id: 'missionControl',
+    label: 'Mission Control',
+    icon: '🎯',
+    description: 'Launch missions, choose difficulty',
+    color: '#10b981',
+    x: 50, y: 51,   // glowing central core
+  },
+  {
+    id: 'galacticMarket',
+    label: 'Galactic Market',
+    icon: '🏪',
+    description: 'Buy, sell & salvage equipment',
+    color: '#f59e0b',
+    x: 21, y: 67,   // lower-left arm junction
+  },
+  {
+    id: 'officersLounge',
+    label: "Officer's Lounge",
+    icon: '🏆',
+    description: 'Achievements, stats & codex',
+    color: '#f97316',
+    x: 74, y: 63,   // lower-right observation deck
+  },
+  {
+    id: 'workshop',
+    label: 'Workshop',
+    icon: '🔧',
+    description: 'Upgrade & craft equipment',
+    color: '#94a3b8',
+    x: 50, y: 79,   // bottom vertical tower
   },
 ];
 
@@ -125,160 +128,278 @@ function renderPanel(area: Exclude<HubArea, null>) {
 export function FrontierStation() {
   const profile = useProfile();
   const [openArea, setOpenArea] = useState<HubArea>(null);
+  const [hoveredArea, setHoveredArea] = useState<Exclude<HubArea, null> | null>(null);
+  const [isMobileList, setIsMobileList] = useState(false);
   const logout = useGameStore(s => s.logout);
 
   if (!profile) return null;
 
   return (
     <div style={{ width: '100vw', height: '100vh', background: '#0a0e1a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-      {/* Top bar */}
+
+      {/* ── Top bar ── */}
       <div style={{
-        padding: '12px 20px',
-        background: 'rgba(15,22,41,0.95)',
+        padding: '10px 20px',
+        background: 'rgba(10,14,26,0.92)',
         borderBottom: '1px solid #1e2a4a',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
-        backdropFilter: 'blur(10px)',
-        zIndex: 10,
+        backdropFilter: 'blur(12px)',
+        zIndex: 20, flexShrink: 0,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-          <div style={{ fontSize: 24 }}>🚀</div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+          <span style={{ fontSize: 22 }}>🚀</span>
           <div>
             <div style={{
-              fontSize: 18, fontWeight: 700, letterSpacing: 2,
+              fontSize: 17, fontWeight: 700, letterSpacing: 3,
               background: 'linear-gradient(90deg, #00d4ff, #7c3aed)',
               WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
             }}>
               SPACE SCOUTS
             </div>
-            <div style={{ fontSize: 11, color: '#64748b', letterSpacing: 1 }}>FRONTIER STATION</div>
+            <div style={{ fontSize: 10, color: '#475569', letterSpacing: 2 }}>FRONTIER STATION</div>
           </div>
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-          <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-            <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: 13, fontWeight: 700, color: '#00d4ff' }}>{profile.captain.name}</div>
-              <div style={{ fontSize: 11, color: '#64748b' }}>
-                {profile.captain.class} • Lv.{profile.captain.level} | Missions: {profile.stats.missionsCompleted}
-              </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+          {/* Captain info */}
+          <div style={{ textAlign: 'right', display: 'none' }} className="hide-mobile">
+            <div style={{ fontSize: 13, fontWeight: 700, color: '#00d4ff' }}>{profile.captain.name}</div>
+            <div style={{ fontSize: 11, color: '#64748b' }}>
+              {profile.captain.class} · Lv.{profile.captain.level}
+              {profile.stats.missionsCompleted > 0 && ` · ${profile.stats.missionsCompleted} missions`}
             </div>
           </div>
+          <div style={{ color: '#f59e0b', fontWeight: 700, fontSize: 14 }}>
+            💰 {profile.credits.toLocaleString()}
+          </div>
+          {/* Mobile list toggle */}
           <button
-            className="btn btn-danger"
-            style={{ fontSize: 12, padding: '6px 14px' }}
-            onClick={logout}
+            onClick={() => setIsMobileList(v => !v)}
+            style={{
+              background: isMobileList ? '#1e2a4a' : 'transparent',
+              border: '1px solid #1e2a4a', borderRadius: 4,
+              color: '#94a3b8', fontSize: 11, padding: '5px 10px', cursor: 'pointer',
+              fontFamily: 'inherit', letterSpacing: 1,
+            }}
           >
+            {isMobileList ? '🗺 MAP' : '☰ LIST'}
+          </button>
+          <button className="btn btn-danger" style={{ fontSize: 11, padding: '5px 12px' }} onClick={logout}>
             LOGOUT
           </button>
         </div>
       </div>
 
-      {/* Main content */}
-      <div style={{ flex: 1, overflowY: 'auto', padding: '24px 20px 80px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-        {/* Station welcome */}
-        <div style={{
-          background: 'linear-gradient(135deg, rgba(0,212,255,0.05), rgba(124,58,237,0.05))',
-          border: '1px solid rgba(0,212,255,0.15)',
-          borderRadius: 12, padding: '20px 24px',
-        }}>
-          <h2 style={{ fontSize: 24, fontWeight: 700, color: '#e2e8f0', marginBottom: 6 }}>
-            Welcome back, Captain {profile.captain.name}
-          </h2>
-          <p style={{ color: '#94a3b8', fontSize: 14 }}>
-            Frontier Station is operational. {profile.stats.missionsCompleted > 0
-              ? `You've completed ${profile.stats.missionsCompleted} mission${profile.stats.missionsCompleted !== 1 ? 's' : ''}.`
-              : 'Ready for your first mission into the unknown.'}
-          </p>
-        </div>
+      {/* ── Station map ── */}
+      <div style={{ flex: 1, overflow: 'hidden', position: 'relative' }}>
 
-        {/* Hub areas grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: 14 }}>
-          {AREAS.map(area => (
-            <button
-              key={area.id}
-              onClick={() => setOpenArea(area.id)}
-              style={{
-                background: area.color,
-                border: `1px solid ${area.accentColor}44`,
-                borderRadius: 10,
-                padding: '20px 18px',
-                cursor: 'pointer',
-                textAlign: 'left',
-                transition: 'all 0.2s',
-                fontFamily: 'inherit',
-                position: 'relative',
-                overflow: 'hidden',
-              }}
-              onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.border = `1px solid ${area.accentColor}`;
-                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-2px)';
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = `0 8px 24px ${area.accentColor}22`;
-              }}
-              onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.border = `1px solid ${area.accentColor}44`;
-                (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0)';
-                (e.currentTarget as HTMLButtonElement).style.boxShadow = 'none';
-              }}
-            >
-              <div style={{ fontSize: 32, marginBottom: 10 }}>{area.icon}</div>
-              <div style={{ fontWeight: 700, color: area.accentColor, fontSize: 16, marginBottom: 4, letterSpacing: 0.5 }}>
-                {area.label}
-              </div>
-              <div style={{ color: '#94a3b8', fontSize: 13 }}>{area.description}</div>
-              <div style={{
-                position: 'absolute', right: 12, top: 12,
-                color: area.accentColor, fontSize: 18, opacity: 0.5,
-              }}>›</div>
-            </button>
-          ))}
-        </div>
+        {isMobileList ? (
+          /* ── List fallback for small screens ── */
+          <div style={{ height: '100%', overflowY: 'auto', padding: '16px 16px 90px', display: 'flex', flexDirection: 'column', gap: 10 }}>
+            <div style={{ color: '#94a3b8', fontSize: 12, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 4 }}>
+              Select a station area
+            </div>
+            {HOTSPOTS.map(hs => (
+              <button
+                key={hs.id}
+                onClick={() => setOpenArea(hs.id)}
+                style={{
+                  display: 'flex', alignItems: 'center', gap: 14,
+                  background: `${hs.color}11`, border: `1px solid ${hs.color}44`,
+                  borderRadius: 8, padding: '14px 16px', cursor: 'pointer',
+                  textAlign: 'left', fontFamily: 'inherit', transition: 'all 0.15s',
+                }}
+                onMouseEnter={e => (e.currentTarget.style.borderColor = hs.color)}
+                onMouseLeave={e => (e.currentTarget.style.borderColor = `${hs.color}44`)}
+              >
+                <span style={{ fontSize: 26 }}>{hs.icon}</span>
+                <div>
+                  <div style={{ fontWeight: 700, color: hs.color, fontSize: 14 }}>{hs.label}</div>
+                  <div style={{ color: '#64748b', fontSize: 12 }}>{hs.description}</div>
+                </div>
+                <span style={{ marginLeft: 'auto', color: hs.color, fontSize: 18 }}>›</span>
+              </button>
+            ))}
+          </div>
+        ) : (
+          /* ── Visual station map ── */
+          <div style={{ position: 'relative', width: '100%', height: '100%' }}>
 
-        {/* Quick stats */}
-        <div style={{ background: '#0f1629', border: '1px solid #1e2a4a', borderRadius: 12, padding: '16px 20px' }}>
-          <div style={{ fontWeight: 700, color: '#00d4ff', fontSize: 13, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 14 }}>
-            Quick Status
+            {/* Station background image */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              backgroundImage: 'url(./space_station.jpg)',
+              backgroundSize: 'cover',
+              backgroundPosition: 'center 30%',
+              backgroundRepeat: 'no-repeat',
+            }} />
+
+            {/* Dark vignette overlay — darkens edges, keeps center visible */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              background: 'radial-gradient(ellipse at 50% 45%, rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.55) 100%)',
+            }} />
+
+            {/* Subtle scan-line texture */}
+            <div style={{
+              position: 'absolute', inset: 0, opacity: 0.04,
+              backgroundImage: 'repeating-linear-gradient(0deg, #fff 0px, #fff 1px, transparent 1px, transparent 4px)',
+              pointerEvents: 'none',
+            }} />
+
+            {/* Station title badge */}
+            <div style={{
+              position: 'absolute', top: 16, left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(10,14,26,0.75)',
+              border: '1px solid rgba(0,212,255,0.25)',
+              borderRadius: 6, padding: '6px 18px',
+              backdropFilter: 'blur(8px)',
+              textAlign: 'center', pointerEvents: 'none',
+            }}>
+              <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: 3, color: '#00d4ff', textTransform: 'uppercase' }}>
+                Frontier Station
+              </div>
+              <div style={{ fontSize: 10, color: '#475569', letterSpacing: 1 }}>
+                {profile.captain.name} · {profile.captain.class} Lv.{profile.captain.level}
+              </div>
+            </div>
+
+            {/* Hotspot pins */}
+            {HOTSPOTS.map(hs => {
+              const isHovered = hoveredArea === hs.id;
+
+              return (
+                <div
+                  key={hs.id}
+                  style={{
+                    position: 'absolute',
+                    left: `${hs.x}%`,
+                    top: `${hs.y}%`,
+                    transform: 'translate(-50%, -50%)',
+                    zIndex: isHovered ? 15 : 10,
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={() => setHoveredArea(hs.id)}
+                  onMouseLeave={() => setHoveredArea(null)}
+                  onClick={() => setOpenArea(hs.id)}
+                >
+                  {/* Outer pulse ring */}
+                  <div style={{
+                    position: 'absolute',
+                    inset: -10,
+                    borderRadius: '50%',
+                    border: `2px solid ${hs.color}`,
+                    opacity: isHovered ? 0.9 : 0.5,
+                    animation: 'hotspot-pulse 2.5s ease-in-out infinite',
+                    animationDelay: `${HOTSPOTS.indexOf(hs) * 0.3}s`,
+                    transition: 'opacity 0.2s',
+                    pointerEvents: 'none',
+                  }} />
+
+                  {/* Second pulse ring (offset) */}
+                  <div style={{
+                    position: 'absolute',
+                    inset: -20,
+                    borderRadius: '50%',
+                    border: `1px solid ${hs.color}`,
+                    opacity: isHovered ? 0.4 : 0.2,
+                    animation: 'hotspot-pulse 2.5s ease-in-out infinite',
+                    animationDelay: `${HOTSPOTS.indexOf(hs) * 0.3 + 0.4}s`,
+                    pointerEvents: 'none',
+                  }} />
+
+                  {/* Pin dot */}
+                  <div style={{
+                    width: 36, height: 36,
+                    borderRadius: '50%',
+                    background: isHovered
+                      ? hs.color
+                      : `radial-gradient(circle, ${hs.color}cc, ${hs.color}55)`,
+                    border: `2px solid ${hs.color}`,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    fontSize: 16,
+                    boxShadow: isHovered
+                      ? `0 0 20px ${hs.color}, 0 0 40px ${hs.color}66`
+                      : `0 0 10px ${hs.color}88`,
+                    transition: 'all 0.2s',
+                    transform: isHovered ? 'scale(1.25)' : 'scale(1)',
+                  }}>
+                    {hs.icon}
+                  </div>
+
+                  {/* Tooltip card — appears above or below depending on position */}
+                  {isHovered && (
+                    <div style={{
+                      position: 'absolute',
+                      // flip tooltip above center if pin is in lower half
+                      ...(hs.y > 55
+                        ? { bottom: 'calc(100% + 14px)', top: 'auto' }
+                        : { top: 'calc(100% + 14px)', bottom: 'auto' }),
+                      // flip tooltip right if pin is too far left
+                      ...(hs.x < 20
+                        ? { left: 0, right: 'auto', transform: 'none' }
+                        : hs.x > 80
+                        ? { right: 0, left: 'auto', transform: 'none' }
+                        : { left: '50%', transform: 'translateX(-50%)' }),
+                      width: 180,
+                      background: 'rgba(10,14,26,0.95)',
+                      border: `1px solid ${hs.color}`,
+                      borderRadius: 8,
+                      padding: '10px 12px',
+                      backdropFilter: 'blur(12px)',
+                      boxShadow: `0 4px 24px rgba(0,0,0,0.6), 0 0 12px ${hs.color}33`,
+                      pointerEvents: 'none',
+                      animation: 'fadeIn 0.15s ease',
+                      whiteSpace: 'nowrap',
+                    }}>
+                      <div style={{ fontWeight: 700, color: hs.color, fontSize: 13, marginBottom: 4, letterSpacing: 0.5 }}>
+                        {hs.label}
+                      </div>
+                      <div style={{ color: '#94a3b8', fontSize: 11, lineHeight: 1.4, whiteSpace: 'normal' }}>
+                        {hs.description}
+                      </div>
+                      <div style={{ marginTop: 8, fontSize: 10, color: `${hs.color}99`, textTransform: 'uppercase', letterSpacing: 1 }}>
+                        Click to enter →
+                      </div>
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            {/* Bottom-left quick stats HUD */}
+            <div style={{
+              position: 'absolute', bottom: 70, left: 16,
+              background: 'rgba(10,14,26,0.82)',
+              border: '1px solid #1e2a4a',
+              borderRadius: 8, padding: '10px 14px',
+              backdropFilter: 'blur(10px)',
+              display: 'flex', flexDirection: 'column', gap: 6,
+              minWidth: 160,
+            }}>
+              {[
+                { label: 'Captain HP', val: profile.captain.currentStats.hp, max: profile.captain.currentStats.maxHp, cls: 'hp' },
+                { label: 'Ship Hull',  val: profile.ship.currentStats.hp,    max: profile.ship.currentStats.maxHp,    cls: 'hp' },
+                { label: 'Shield',     val: profile.ship.currentStats.shield, max: profile.ship.currentStats.maxShield, cls: 'shield' },
+              ].map(s => (
+                <div key={s.label}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: '#64748b', marginBottom: 2 }}>
+                    <span>{s.label}</span>
+                    <span>{s.val}/{s.max}</span>
+                  </div>
+                  <div className="stat-bar" style={{ height: 4 }}>
+                    <div className={`stat-bar-fill ${s.cls}`} style={{ width: `${(s.val / s.max) * 100}%` }} />
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: 12 }}>
-            {/* Captain HP */}
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>
-                <span>Captain HP</span>
-                <span>{profile.captain.currentStats.hp}/{profile.captain.currentStats.maxHp}</span>
-              </div>
-              <div className="stat-bar">
-                <div className="stat-bar-fill hp" style={{ width: `${(profile.captain.currentStats.hp / profile.captain.currentStats.maxHp) * 100}%` }} />
-              </div>
-            </div>
-            {/* Ship HP */}
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>
-                <span>Ship Hull</span>
-                <span>{profile.ship.currentStats.hp}/{profile.ship.currentStats.maxHp}</span>
-              </div>
-              <div className="stat-bar">
-                <div className="stat-bar-fill hp" style={{ width: `${(profile.ship.currentStats.hp / profile.ship.currentStats.maxHp) * 100}%` }} />
-              </div>
-            </div>
-            {/* Ship Shield */}
-            <div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#94a3b8', marginBottom: 4 }}>
-                <span>Ship Shield</span>
-                <span>{profile.ship.currentStats.shield}/{profile.ship.currentStats.maxShield}</span>
-              </div>
-              <div className="stat-bar">
-                <div className="stat-bar-fill shield" style={{ width: `${(profile.ship.currentStats.shield / profile.ship.currentStats.maxShield) * 100}%` }} />
-              </div>
-            </div>
-            {/* Credits */}
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: 12, color: '#94a3b8' }}>Credits</span>
-              <span style={{ color: '#f59e0b', fontWeight: 700, fontSize: 16 }}>{profile.credits.toLocaleString()}</span>
-            </div>
-          </div>
-        </div>
+        )}
       </div>
 
-      {/* Slide panel */}
+      {/* ── Slide panel ── */}
       <SlidePanel
         isOpen={openArea !== null}
         onClose={() => setOpenArea(null)}
@@ -288,7 +409,7 @@ export function FrontierStation() {
         {openArea && renderPanel(openArea)}
       </SlidePanel>
 
-      {/* Status footer */}
+      {/* ── Status footer (XP bars) ── */}
       <StatusFooter />
     </div>
   );
