@@ -13,13 +13,22 @@ import { generateLoot } from '../utils/loot';
 import { levelUpCaptain, levelUpShip, levelUpRobot, captainXpToNext, shipXpToNext, robotXpToNext } from '../utils/progression';
 import { hexDistance, getReachableCells, getAttackableCells, calculateSpaceDamage, enemyAiMove, calculateDamage, calculateSkillDamage, processStatusEffects, calculateInitiative } from '../utils/combat';
 
-// Simple SHA-256 substitute using a hash function
+// Simple hash function — falls back to a basic obfuscation when crypto.subtle is unavailable (HTTP)
 async function hashPassword(password: string): Promise<string> {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(password);
-  const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  if (typeof crypto !== 'undefined' && crypto.subtle) {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(password);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+  // Fallback: simple djb2-style hash for non-secure contexts
+  let h = 5381;
+  for (let i = 0; i < password.length; i++) {
+    h = ((h << 5) + h) ^ password.charCodeAt(i);
+    h = h >>> 0;
+  }
+  return h.toString(16).padStart(8, '0') + '_fallback';
 }
 
 function generateId(): string {
