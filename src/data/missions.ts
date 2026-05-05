@@ -37,11 +37,15 @@ export const BIOMES: BiomeData[] = [
   },
 ];
 
-export const DIFFICULTY_MODIFIERS: Record<Difficulty, { levelMod: number; rewardMult: number; label: string; color: string }> = {
-  Easy: { levelMod: -2, rewardMult: 0.7, label: 'Easy', color: '#10b981' },
-  Normal: { levelMod: 0, rewardMult: 1.0, label: 'Normal', color: '#60a5fa' },
-  Hard: { levelMod: 3, rewardMult: 1.5, label: 'Hard', color: '#f59e0b' },
-  Nightmare: { levelMod: 7, rewardMult: 2.5, label: 'Nightmare', color: '#ef4444' },
+export const DIFFICULTY_MODIFIERS: Record<Difficulty, {
+  levelMod: number; rewardMult: number; label: string; color: string;
+  spaceCount: { min: number; max: number };
+  surfaceSize: { min: number; max: number };
+}> = {
+  Easy:      { levelMod: -2, rewardMult: 0.7, label: 'Easy',      color: '#10b981', spaceCount: { min: 1, max: 1 }, surfaceSize: { min: 1, max: 1 } },
+  Normal:    { levelMod:  0, rewardMult: 1.0, label: 'Normal',    color: '#60a5fa', spaceCount: { min: 2, max: 3 }, surfaceSize: { min: 1, max: 2 } },
+  Hard:      { levelMod:  3, rewardMult: 1.5, label: 'Hard',      color: '#f59e0b', spaceCount: { min: 3, max: 4 }, surfaceSize: { min: 2, max: 3 } },
+  Nightmare: { levelMod:  7, rewardMult: 2.5, label: 'Nightmare', color: '#ef4444', spaceCount: { min: 4, max: 4 }, surfaceSize: { min: 3, max: 4 } },
 };
 
 function seededRandom(seed: number): () => number {
@@ -87,9 +91,10 @@ export function generateMission(
   ];
   const missionName = missionNames[Math.floor(rand() * missionNames.length)];
 
-  // Generate space enemies (2-3 ships)
+  // Generate space enemies — count scales with difficulty
   const spaceTemplates = SPACE_ENEMY_TEMPLATES.filter(t => t.faction === faction);
-  const numSpaceEnemies = Math.floor(rand() * 2) + 2;
+  const { min: sMin, max: sMax } = diffMod.spaceCount;
+  const numSpaceEnemies = sMin + Math.floor(rand() * (sMax - sMin + 1));
   const spacePositions = [
     { q: 5, r: 1 }, { q: 6, r: 3 }, { q: 5, r: 5 }, { q: 4, r: 6 },
   ];
@@ -100,17 +105,17 @@ export function generateMission(
     return generateSpaceEnemy(template, enemyLevel, pos.q, pos.r);
   });
 
-  // Generate surface enemies (1-3 groups)
+  // Generate surface enemies — unit count scales with difficulty
   const surfaceTemplates = ENEMY_TEMPLATES.filter(t => t.faction === faction);
-  const numGroups = Math.floor(rand() * 2) + 1;
+  const { min: uMin, max: uMax } = diffMod.surfaceSize;
+  const groupSize = uMin + Math.floor(rand() * (uMax - uMin + 1));
 
-  const surfaceEnemies = Array.from({ length: numGroups }, () => {
-    const groupSize = Math.floor(rand() * 2) + 1;
-    return Array.from({ length: groupSize }, (_, i) => {
+  const surfaceEnemies = [
+    Array.from({ length: groupSize }, (_, i) => {
       const template = surfaceTemplates[Math.floor(rand() * surfaceTemplates.length)];
       return generateEnemyUnit(template, enemyLevel, i);
-    });
-  });
+    }),
+  ];
 
   const baseCredits = { Easy: 150, Normal: 300, Hard: 500, Nightmare: 900 }[difficulty];
   const creditVariance = Math.floor(rand() * 200);
