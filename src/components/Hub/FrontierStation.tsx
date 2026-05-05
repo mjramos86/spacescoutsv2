@@ -135,7 +135,7 @@ export function FrontierStation() {
   if (!profile) return null;
 
   return (
-    <div style={{ width: '100vw', height: '100vh', background: '#0a0e1a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+    <div style={{ width: '100%', height: '100vh', background: '#0a0e1a', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
 
       {/* ── Top bar ── */}
       <div style={{

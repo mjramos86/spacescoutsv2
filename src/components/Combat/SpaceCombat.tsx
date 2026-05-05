@@ -162,7 +162,7 @@ export function SpaceCombat() {
 
   return (
     <div style={{
-      width: '100vw', height: '100vh',
+      width: '100%', height: '100vh',
       background: '#0a0e1a',
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
@@ -216,7 +216,7 @@ export function SpaceCombat() {
         </div>
       </div>
 
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div className="combat-body">
         {/* Hex grid area */}
         <div style={{ flex: 1, overflow: 'auto', padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
           <HexGrid
@@ -232,7 +232,7 @@ export function SpaceCombat() {
         </div>
 
         {/* Right sidebar */}
-        <div style={{ width: 280, padding: 16, display: 'flex', flexDirection: 'column', gap: 12, overflowY: 'auto', borderLeft: '1px solid #1e2a4a' }}>
+        <div className="combat-sidebar" style={{ padding: 16, gap: 12 }}>
           {/* Player ship status */}
           <div style={{ background: '#0f1629', border: '1px solid #1e2a4a', borderRadius: 8, padding: '12px 14px' }}>
             <div style={{ color: shipTypeData.color, fontWeight: 700, fontSize: 14, marginBottom: 8 }}>
@@ -329,8 +329,9 @@ export function SpaceCombat() {
         }}>
           <div style={{
             background: '#0f1629', border: `1px solid ${phase === 'victory' ? '#10b981' : '#ef4444'}`,
-            borderRadius: 12, padding: '40px 48px', textAlign: 'center',
+            borderRadius: 12, padding: 'clamp(24px, 5vw, 40px) clamp(20px, 6vw, 48px)', textAlign: 'center',
             boxShadow: `0 0 60px ${phase === 'victory' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
+            maxWidth: '92vw',
           }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>{phase === 'victory' ? '🎖️' : '💥'}</div>
             <h2 style={{

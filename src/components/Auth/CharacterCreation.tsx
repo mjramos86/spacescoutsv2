@@ -60,20 +60,19 @@ export function CharacterCreation() {
   );
 
   return (
-    <div style={{
-      width: '100vw', height: '100vh',
+    <div className="screen-full" style={{
       background: '#0a0e1a',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      overflow: 'auto',
+      display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+      padding: '20px 16px',
     }}>
       <div style={{
-        width: 700, maxWidth: '95vw',
+        width: 'min(700px, 100%)',
         background: '#0f1629',
         border: '1px solid #1e2a4a',
         borderRadius: 12,
-        padding: '36px 40px',
+        padding: 'clamp(20px, 4vw, 36px) clamp(16px, 4vw, 40px)',
         boxShadow: '0 0 60px rgba(0,212,255,0.1)',
-        margin: '20px auto',
+        margin: '0 auto',
       }}>
         <div style={{ textAlign: 'center', marginBottom: 24 }}>
           <h2 style={{ fontSize: 28, fontWeight: 700, letterSpacing: 3, color: '#00d4ff', textTransform: 'uppercase' }}>
@@ -120,7 +119,7 @@ export function CharacterCreation() {
             </h3>
             <p style={{ color: '#94a3b8', fontSize: 14, marginBottom: 20 }}>Captain: <strong style={{ color: '#00d4ff' }}>{captainName}</strong></p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(190px, 1fr))', gap: 12, marginBottom: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12, marginBottom: 24 }}>
               {CAPTAIN_CLASSES.map(cls => (
                 <div
                   key={cls.class}
@@ -172,7 +171,7 @@ export function CharacterCreation() {
               Class: <strong style={{ color: '#00d4ff' }}>{selectedClass}</strong>
             </p>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: 12, marginBottom: 24 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(150px, 1fr))', gap: 12, marginBottom: 24 }}>
               {SHIP_TYPES.map(ship => (
                 <div
                   key={ship.type}

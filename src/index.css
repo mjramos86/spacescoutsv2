@@ -30,7 +30,7 @@ html, body, #root {
   background: var(--bg);
   color: var(--text);
   font-family: 'Rajdhani', 'Exo 2', monospace;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
 button {
@@ -202,9 +202,64 @@ input, textarea {
   100% { transform: scale(1);   opacity: 0.6; }
 }
 
-.hide-mobile {
-  display: block;
+/* ── Responsive layout classes ─────────────────────────────── */
+
+/* Full-screen scrollable wrapper */
+.screen-full {
+  width: 100%;
+  min-height: 100vh;
+  overflow-y: auto;
 }
+
+/* Combat: side-by-side on desktop, stacked on mobile */
+.combat-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+.combat-sidebar {
+  width: 280px;
+  border-left: 1px solid var(--panel-border);
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+/* Status footer scrolls horizontally on very small screens */
+.status-footer-scroll {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  min-width: 0;
+  scrollbar-width: none;
+}
+.status-footer-scroll::-webkit-scrollbar { display: none; }
+
+.hide-mobile { display: block; }
+
 @media (max-width: 600px) {
   .hide-mobile { display: none !important; }
+
+  /* Combat stacks vertically on mobile */
+  .combat-body {
+    flex-direction: column;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+  .combat-sidebar {
+    width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--panel-border);
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  /* Slightly smaller gap in footer on mobile */
+  .status-footer-scroll {
+    gap: 10px;
+  }
 }

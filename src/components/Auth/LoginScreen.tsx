@@ -24,14 +24,13 @@ export function LoginScreen() {
   }
 
   return (
-    <div style={{
-      width: '100vw', height: '100vh',
+    <div className="screen-full" style={{
       background: '#0a0e1a',
       display: 'flex', alignItems: 'center', justifyContent: 'center',
-      position: 'relative', overflow: 'hidden',
+      position: 'relative', padding: '20px 16px',
     }}>
       {/* Stars background */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
+      <div style={{ position: 'fixed', inset: 0, overflow: 'hidden', pointerEvents: 'none' }}>
         {Array.from({ length: 80 }, (_, i) => (
           <div key={i} style={{
             position: 'absolute',
@@ -51,8 +50,8 @@ export function LoginScreen() {
         background: '#0f1629',
         border: '1px solid #1e2a4a',
         borderRadius: 12,
-        padding: '48px 40px',
-        width: 400,
+        padding: 'clamp(24px, 5vw, 48px) clamp(20px, 5vw, 40px)',
+        width: 'min(400px, 100%)',
         boxShadow: '0 0 60px rgba(0,212,255,0.1)',
         position: 'relative',
         zIndex: 1,

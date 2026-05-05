@@ -23,7 +23,7 @@ export function SlidePanel({ isOpen, onClose, title, children, width = '420px' }
       <div
         style={{
           position: 'fixed', top: 0, right: 0, bottom: 0,
-          width, maxWidth: '95vw',
+          width: `min(${width}, 100vw)`,
           background: '#0f1629',
           borderLeft: '1px solid #1e2a4a',
           zIndex: 101,

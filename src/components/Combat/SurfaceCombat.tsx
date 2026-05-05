@@ -236,7 +236,7 @@ export function SurfaceCombat() {
 
   return (
     <div style={{
-      width: '100vw', height: '100vh',
+      width: '100%', height: '100vh',
       background: '#0a0e1a',
       display: 'flex', flexDirection: 'column',
       overflow: 'hidden',
@@ -287,9 +287,9 @@ export function SurfaceCombat() {
       </div>
 
       {/* Main area */}
-      <div style={{ flex: 1, display: 'flex', overflow: 'hidden' }}>
+      <div className="combat-body">
         {/* Battle field */}
-        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'auto', minWidth: 0 }}>
           {/* Enemy area (top half) */}
           <div style={{
             flex: 1, background: 'linear-gradient(180deg, #0a0614 0%, #0a0e1a 100%)',
@@ -353,7 +353,7 @@ export function SurfaceCombat() {
         </div>
 
         {/* Right sidebar - combat UI */}
-        <div style={{ width: 280, borderLeft: '1px solid #1e2a4a', display: 'flex', flexDirection: 'column' }}>
+        <div className="combat-sidebar">
           {/* Action menu */}
           {isPlayerTurn && (
             <div style={{ padding: 12 }}>
@@ -491,8 +491,9 @@ export function SurfaceCombat() {
           <div style={{
             background: '#0f1629',
             border: `1px solid ${phase === 'victory' ? '#10b981' : '#ef4444'}`,
-            borderRadius: 12, padding: '40px 48px', textAlign: 'center',
+            borderRadius: 12, padding: 'clamp(24px, 5vw, 40px) clamp(20px, 6vw, 48px)', textAlign: 'center',
             boxShadow: `0 0 60px ${phase === 'victory' ? 'rgba(16,185,129,0.3)' : 'rgba(239,68,68,0.3)'}`,
+            maxWidth: '92vw',
           }}>
             <div style={{ fontSize: 48, marginBottom: 16 }}>
               {phase === 'victory' ? '🏆' : phase === 'flee' ? '🏃' : '💀'}

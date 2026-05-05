@@ -11,20 +11,19 @@ export function MissionResult() {
   const totalXp = result.xpGained.captain + result.xpGained.ship + result.xpGained.robots;
 
   return (
-    <div style={{
-      width: '100vw', height: '100vh',
+    <div className="screen-full" style={{
       background: '#0a0e1a',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      overflow: 'auto',
+      display: 'flex', alignItems: 'flex-start', justifyContent: 'center',
+      padding: '20px 16px',
     }}>
       <div style={{
-        width: 560, maxWidth: '95vw',
+        width: 'min(560px, 100%)',
         background: '#0f1629',
         border: `1px solid ${result.success ? '#10b981' : '#ef4444'}`,
         borderRadius: 12,
-        padding: '36px 40px',
+        padding: 'clamp(20px, 4vw, 36px) clamp(16px, 4vw, 40px)',
         boxShadow: `0 0 60px ${result.success ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`,
-        margin: 20,
+        margin: '0 auto',
       }}>
         {/* Header */}
         <div style={{ textAlign: 'center', marginBottom: 32 }}>
@@ -50,7 +49,7 @@ export function MissionResult() {
               <div style={{ fontWeight: 700, color: '#f59e0b', fontSize: 14, textTransform: 'uppercase', letterSpacing: 1, marginBottom: 12 }}>
                 Experience Gained
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 10 }}>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10 }}>
                 <div style={{ textAlign: 'center' }}>
                   <div style={{ fontSize: 11, color: '#64748b', textTransform: 'uppercase', marginBottom: 4 }}>Captain</div>
                   <div style={{ fontSize: 22, fontWeight: 700, color: '#f59e0b' }}>+{result.xpGained.captain}</div>
