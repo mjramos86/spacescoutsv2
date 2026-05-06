@@ -241,6 +241,18 @@ input, textarea {
 
 .hide-mobile { display: block; }
 
+/* Surface combat bottom panel */
+.surface-bottom-panel {
+  display: flex;
+  gap: 12px;
+}
+
+/* Float animation for active combatant sprites */
+@keyframes floatUp {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-4px); }
+}
+
 @media (max-width: 600px) {
   .hide-mobile { display: none !important; }
 
@@ -261,5 +273,15 @@ input, textarea {
   /* Slightly smaller gap in footer on mobile */
   .status-footer-scroll {
     gap: 10px;
+  }
+
+  /* Surface bottom panel stacks on mobile */
+  .surface-bottom-panel {
+    flex-direction: column;
+    max-height: none !important;
+  }
+  .surface-bottom-panel > div:last-child {
+    width: 100% !important;
+    max-height: 100px;
   }
 }
