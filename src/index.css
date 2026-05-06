@@ -262,12 +262,17 @@ input, textarea {
     overflow-y: auto;
     overflow-x: hidden;
   }
+  .combat-grid-area {
+    flex: none !important;
+    padding: 8px !important;
+    min-height: 240px;
+  }
   .combat-sidebar {
     width: 100%;
     border-left: none;
     border-top: 1px solid var(--panel-border);
-    max-height: 300px;
-    overflow-y: auto;
+    max-height: none;
+    overflow-y: visible;
   }
 
   /* Slightly smaller gap in footer on mobile */

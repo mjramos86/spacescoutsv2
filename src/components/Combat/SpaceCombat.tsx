@@ -169,47 +169,50 @@ export function SpaceCombat() {
     }}>
       {/* Header */}
       <div style={{
-        padding: '10px 16px',
+        padding: '8px 12px',
         background: '#0f1629',
         borderBottom: '1px solid #1e2a4a',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        flexWrap: 'wrap', gap: 4,
       }}>
-        <div>
-          <span style={{ fontSize: 16, fontWeight: 700, color: '#00d4ff', textTransform: 'uppercase', letterSpacing: 2 }}>
+        <div style={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '4px 12px' }}>
+          <span style={{ fontSize: 15, fontWeight: 700, color: '#00d4ff', textTransform: 'uppercase', letterSpacing: 2 }}>
             SPACE COMBAT
           </span>
-          <span style={{ marginLeft: 16, color: '#94a3b8', fontSize: 13 }}>
+          <span style={{ color: '#94a3b8', fontSize: 12 }}>
             {sc.mission.name} — {sc.mission.biome}
           </span>
         </div>
-        <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
-          <span style={{ color: '#f59e0b', fontSize: 13 }}>Turn {turn}</span>
-          <span style={{ color: '#94a3b8', fontSize: 13 }}>Enemies: {enemies.length}</span>
+        <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+          <span style={{ color: '#f59e0b', fontSize: 12 }}>Turn {turn}</span>
+          <span style={{ color: '#94a3b8', fontSize: 12 }}>Enemies: {enemies.length}</span>
         </div>
       </div>
 
       {/* Phase indicator */}
       <div style={{
-        padding: '8px 16px',
+        padding: '6px 12px',
         background: phase === 'victory' ? 'rgba(16,185,129,0.15)' : phase === 'defeat' ? 'rgba(239,68,68,0.15)' : 'rgba(0,212,255,0.08)',
         borderBottom: '1px solid #1e2a4a',
         display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+        flexWrap: 'wrap', gap: 6,
       }}>
         <span style={{
-          fontWeight: 700, fontSize: 13,
+          fontWeight: 700, fontSize: 12,
           color: phase === 'victory' ? '#10b981' : phase === 'defeat' ? '#ef4444' : '#00d4ff',
           textTransform: 'uppercase', letterSpacing: 1,
+          flex: 1, minWidth: 0,
         }}>
           {phaseLabel[phase] ?? phase.toUpperCase()}
         </span>
-        <div style={{ display: 'flex', gap: 8 }}>
+        <div style={{ display: 'flex', gap: 8, flexShrink: 0 }}>
           {(phase === 'select' || phase === 'move' || phase === 'attack') && (
-            <button className="btn" style={{ fontSize: 12 }} onClick={endSpaceTurn}>
+            <button className="btn" style={{ fontSize: 11, padding: '5px 12px' }} onClick={endSpaceTurn}>
               END TURN
             </button>
           )}
           {phase === 'enemy' && (
-            <button className="btn btn-primary" style={{ fontSize: 12 }} onClick={endSpaceTurn}>
+            <button className="btn btn-primary" style={{ fontSize: 11, padding: '5px 12px' }} onClick={endSpaceTurn}>
               PROCESS ENEMY TURN
             </button>
           )}
@@ -218,7 +221,7 @@ export function SpaceCombat() {
 
       <div className="combat-body">
         {/* Hex grid area */}
-        <div style={{ flex: 1, overflow: 'auto', padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
+        <div className="combat-grid-area" style={{ flex: 1, overflow: 'auto', padding: 16, display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
           <HexGrid
             grid={grid}
             playerQ={playerQ}

@@ -85,9 +85,10 @@ export function HexGrid({
 
   return (
     <svg
+      viewBox={`0 0 ${svgWidth} ${svgHeight}`}
       width={svgWidth}
       height={svgHeight}
-      style={{ display: 'block', maxWidth: '100%' }}
+      style={{ display: 'block', maxWidth: '100%', height: 'auto' }}
     >
       {/* Legend */}
       <g transform="translate(8, 8)">
